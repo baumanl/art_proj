@@ -43,12 +43,15 @@ def standard(n):
 def mod_img(img, boundaries):
   colors = []
   imgs = []
+  buildup = []
   pixels  = [[]] * len(boundaries)
   positions = [[]] * len(boundaries)
   for b in boundaries:
     colors.append((b, b, b))
     im = Image.new("RGBA", img.size, (255, 255, 255))
+    im2 = Image.new("RGBA", img.size, (255, 255, 255))
     imgs.append(im)
+    buildup.append(im2)
   total = Image.new("RGBA", img.size, (255, 255, 255))
   for x in range(img.width):
     for y in range(img.height):
@@ -58,17 +61,19 @@ def mod_img(img, boundaries):
         if b >= boundaries[i]:
           if i + 1 < len(boundaries) and not  b < boundaries[i + 1]:
             continue
-          color_sum = sum(colors[i])
-          pix_sum = sum(pix)
-          if pix_sum == 0:
-            props = (0.33, 0.33, 0.33)
-          else:
-            props = (pix[0] / pix_sum, pix[1] / pix_sum, pix[2] / pix_sum)
-          # new_pix = (int(color_sum * props[0]), int(color_sum * props[1]), int(color_sum * props[2]))
+          # color_sum = sum(colors[i])
+          # pix_sum = sum(pix)
+          # if pix_sum == 0:
+          #   props = (0.33, 0.33, 0.33)
+          # else:
+          #   props = (pix[0] / pix_sum, pix[1] / pix_sum, pix[2] / pix_sum)
+          # # new_pix = (int(color_sum * props[0]), int(color_sum * props[1]), int(color_sum * props[2]))
           new_pix = pix
           imgs[i].putpixel((x,y),new_pix)
-          pixels[i].append(new_pix)
-          positions[i].append((x,y))
+          for j in range(i, len(buildup)):
+            buildup[j].putpixel((x,y),new_pix)
+          # pixels[i].append(new_pix)
+          # positions[i].append((x,y))
           total.putpixel((x,y), new_pix)
   # avgs = []
   # print("l[0]: ", pixels[0][0:10])
@@ -85,9 +90,11 @@ def mod_img(img, boundaries):
   #   imgs[i].putpixel((x,y),pix_val)
   #   total.putpixel((x,y), new_pix)
 
-  for im in imgs:
+  # for im in imgs:
+  #   im.show()
+  # total.show()
+  for im in buildup:
     im.show()
-  total.show()
 
 
 def main():
